@@ -10,7 +10,7 @@ namespace ZstTestClient
     {
         static void Main(string[] args)
         {
-            ZstNode node = new ZstNode("csharptest", "tcp://130.195.44.90:6000");
+            ZstNode node = new ZstNode("csharptest", "tcp://curiosity.soad.vuw.ac.nz:6000");
             node.requestRegisterNode();
 
             Dictionary<string, object> nodeArgs = new Dictionary<string, object>(){
