@@ -117,6 +117,14 @@ using System.Runtime.InteropServices;
 /// </code>
 public partial class SixensePlugin
 {
+#if DEBUG
+    public const string SIXENSE_DLL = "sixensed_x64";
+#else
+    public const string SIXENSE_DLL = "sixense_x64";
+    //public const string SIXENSE_DLL = "sixense";
+
+#endif
+
 	[StructLayout( LayoutKind.Sequential )]
 	public struct sixenseControllerData
 	{
@@ -149,78 +157,78 @@ public partial class SixensePlugin
 		public sixenseControllerData[] controllers;
 	}
 
-    [DllImport("sixense", EntryPoint = "sixenseInit", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport( SIXENSE_DLL, EntryPoint = "sixenseInit", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseInit();
 	
-	[DllImport( "sixense", EntryPoint = "sixenseExit", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseExit", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseExit();
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetMaxBases", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetMaxBases", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetMaxBases();
 	
-	[DllImport( "sixense", EntryPoint = "sixenseSetActiveBase", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseSetActiveBase", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseSetActiveBase( int i );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseIsBaseConnected", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseIsBaseConnected", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseIsBaseConnected( int i );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetMaxControllers", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetMaxControllers", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetMaxControllers();
 	
-	[DllImport( "sixense", EntryPoint = "sixenseIsControllerEnabled", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseIsControllerEnabled", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseIsControllerEnabled( int which );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetNumActiveControllers", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetNumActiveControllers", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetNumActiveControllers();
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetHistorySize", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetHistorySize", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetHistorySize();
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetData", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetData", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetData( int which, int index_back, ref sixenseControllerData cd );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetAllData", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetAllData", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetAllData( int index_back, ref sixenseAllControllerData acd );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetNewestData", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetNewestData", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetNewestData( int which, ref sixenseControllerData cd );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetAllNewestData", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetAllNewestData", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetAllNewestData( ref sixenseAllControllerData acd );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseSetHemisphereTrackingMode", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseSetHemisphereTrackingMode", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseSetHemisphereTrackingMode( int which_controller, int state );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetHemisphereTrackingMode", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetHemisphereTrackingMode", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetHemisphereTrackingMode( int which_controller, ref int state );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseAutoEnableHemisphereTracking", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseAutoEnableHemisphereTracking", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseAutoEnableHemisphereTracking( int which_controller );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseSetHighPriorityBindingEnabled", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseSetHighPriorityBindingEnabled", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseSetHighPriorityBindingEnabled( int on_or_off );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetHighPriorityBindingEnabled", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetHighPriorityBindingEnabled", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetHighPriorityBindingEnabled( ref int on_or_off );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseTriggerVibration", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseTriggerVibration", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseTriggerVibration( int controller_id, int duration_100ms, int pattern_id );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseSetFilterEnabled", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseSetFilterEnabled", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseSetFilterEnabled( int on_or_off );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetFilterEnabled", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetFilterEnabled", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetFilterEnabled( ref int on_or_off );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseSetFilterParams", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseSetFilterParams", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseSetFilterParams( float near_range, float near_val, float far_range, float far_val );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetFilterParams", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetFilterParams", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetFilterParams( ref float near_range, ref float near_val, ref float far_range, ref float far_val );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseSetBaseColor", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseSetBaseColor", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseSetBaseColor( byte red, byte green, byte blue );
 	
-	[DllImport( "sixense", EntryPoint = "sixenseGetBaseColor", CallingConvention = CallingConvention.Cdecl)]
+	[DllImport( SIXENSE_DLL, EntryPoint = "sixenseGetBaseColor", CallingConvention = CallingConvention.Cdecl)]
 	public static extern int sixenseGetBaseColor( ref byte red, ref byte green, ref byte blue );
 }

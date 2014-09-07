@@ -371,6 +371,8 @@ public class SixenseInput
 
 		SixensePlugin.sixenseAutoEnableHemisphereTracking( 0 );
 		SixensePlugin.sixenseAutoEnableHemisphereTracking( 1 );
+        SixensePlugin.sixenseAutoEnableHemisphereTracking( 2 );
+
 		//SixensePlugin.sixenseSetHemisphereTrackingMode(0,1);
 		//SixensePlugin.sixenseSetHemisphereTrackingMode(1,1);
 
