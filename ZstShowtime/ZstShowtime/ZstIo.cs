@@ -57,7 +57,7 @@ namespace ZST
             }
             catch (NetMQException e)
             {
-
+                System.Console.WriteLine(e.ToString());
             }
             return new MethodMessage("", null);
         }

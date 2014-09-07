@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZstShowtime", "ZstShowtime\ZstShowtime.csproj", "{62ED8430-5263-442D-9D2F-62B92E9DC528}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -9,11 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZstShowtime", "ZstShowtime\
 		{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D} = {A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetMQ_Vs2008", "..\..\..\netmq\src\NetMQ\NetMQ_Vs2008.csproj", "{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Newtonsoft.Json.Net35", "..\..\..\Newtonsoft.Json\Src\Newtonsoft.Json\Newtonsoft.Json.Net35.csproj", "{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZstTestClient", "ZstTestClient\ZstTestClient.csproj", "{246588D3-1C3E-4E82-98D5-69DA8FF76DA5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0} = {12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZstStage", "ZstStage\ZstStage.csproj", "{CA5A98DC-0E4F-4B99-9277-CCA429310109}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -23,11 +24,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZstStage", "ZstStage\ZstSta
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZstGetSongLayout", "ZstGetSongLayout\ZstGetSongLayout.csproj", "{18D7CF69-9112-49B8-8A4E-2A07094F46FF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0} = {12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FissureGloves", "FissureGloves\FissureGloves.csproj", "{F022438B-480E-488A-A168-A9939BE72D3C}"
 	ProjectSection(ProjectDependencies) = postProject
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0} = {12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}
 		{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D} = {A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetMQ_Vs2008", "..\netmq\src\NetMQ\NetMQ_Vs2008.csproj", "{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,33 +84,6 @@ Global
 		{62ED8430-5263-442D-9D2F-62B92E9DC528}.Release|Win32.ActiveCfg = Release|Any CPU
 		{62ED8430-5263-442D-9D2F-62B92E9DC528}.Release|x64.ActiveCfg = Release|x64
 		{62ED8430-5263-442D-9D2F-62B92E9DC528}.Release|x64.Build.0 = Release|x64
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|Any CPU.ActiveCfg = Debug|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|Any CPU.Build.0 = Debug|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|Mixed Platforms.Build.0 = Debug|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|Win32.ActiveCfg = Debug|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|x64.ActiveCfg = Debug|x64
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|x64.Build.0 = Debug|x64
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|Any CPU.ActiveCfg = Release|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|Any CPU.Build.0 = Release|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|Mixed Platforms.Build.0 = Release|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|Win32.ActiveCfg = Release|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|x64.ActiveCfg = Release|x64
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|x64.Build.0 = Release|x64
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|Win32.ActiveCfg = Release|Any CPU
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|x64.ActiveCfg = Release|x64
-		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|x64.Build.0 = Release|x64
 		{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}.Debug Static Lib|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}.Debug Static Lib|Any CPU.Build.0 = Debug|Any CPU
 		{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}.Debug Static Lib|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -236,6 +216,34 @@ Global
 		{F022438B-480E-488A-A168-A9939BE72D3C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F022438B-480E-488A-A168-A9939BE72D3C}.Release|Win32.ActiveCfg = Release|Any CPU
 		{F022438B-480E-488A-A168-A9939BE72D3C}.Release|x64.ActiveCfg = Release|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|Any CPU.ActiveCfg = Debug|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|Any CPU.Build.0 = Debug|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|Mixed Platforms.Build.0 = Debug|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|Win32.ActiveCfg = Debug|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|x64.ActiveCfg = Debug|x64
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug Static Lib|x64.Build.0 = Debug|x64
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|x64.ActiveCfg = Debug|x64
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Debug|x64.Build.0 = Debug|x64
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|Any CPU.ActiveCfg = Release|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|Any CPU.Build.0 = Release|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|Mixed Platforms.Build.0 = Release|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|Win32.ActiveCfg = Release|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|x64.ActiveCfg = Release|x64
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release Static Lib|x64.Build.0 = Release|x64
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|Win32.ActiveCfg = Release|Any CPU
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|x64.ActiveCfg = Release|x64
+		{12D3FB9F-85B8-4FFA-AA2B-F21187F4C7A0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

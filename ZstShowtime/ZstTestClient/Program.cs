@@ -37,11 +37,7 @@ namespace ZstTestClient
                 Console.WriteLine("");  
             }
 
-
-            for (int i = 0; i < 10; i++)
-            {
-                node.updateLocalMethodByName("testMethod", i);
-            }
+            node.connectToPeer(peerList["LiveNode"]);
         }
 
         public static object testMethod(ZstMethod messageData)
