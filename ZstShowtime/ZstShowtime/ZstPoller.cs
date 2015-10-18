@@ -25,7 +25,7 @@ namespace ZST{
 			m_poller.PollTimeout = 4;
             Console.WriteLine("Staring poller...");
 
-            m_poller.Start();     
+            m_poller.PollTillCancelled();     
 		}
 
 		public override bool Update(){
@@ -45,7 +45,7 @@ namespace ZST{
 			}
 			m_sockets.Clear();
 
-			m_poller.Stop(false);
+            m_poller.Cancel();
 			base.OnFinished ();
 		}
 	}

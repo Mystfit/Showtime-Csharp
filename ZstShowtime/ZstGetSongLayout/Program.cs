@@ -10,7 +10,7 @@ namespace ZstGetSongLayout
     {
         static void Main(string[] args)
         {
-            ConsoleKeyInfo cki;
+            //ConsoleKeyInfo cki;
             // Prevent example from ending if CTL+C is pressed.
             Console.TreatControlCAsInput = true;
 
@@ -27,9 +27,9 @@ namespace ZstGetSongLayout
             
             //do
             //{
-            //    cki = Console.ReadKey();
-            //    Console.WriteLine("Looping");
-            //} while (cki.Key != ConsoleKey.Escape);
+            //    cki = console.readkey();
+            //    console.writeline("looping");
+            //} while (cki.key != consolekey.escape);
 
             node.close();
         }

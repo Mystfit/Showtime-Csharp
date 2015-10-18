@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace ZST
 {
-    public class ZstNode
+    public class ZstNode : ThreadedJob
     {
         // Constants
         // ---------
@@ -43,15 +43,15 @@ namespace ZST
         protected Dictionary<string, ZstMethod> m_methods;
         public Dictionary<string, ZstPeerLink> peers { get { return m_peers; } }
         protected Dictionary<string, ZstPeerLink> m_peers;
-
+        protected List<NetMQSocket> m_listeningSockets;
 
         // Zmq variables
         protected NetMQContext m_ctx;
         protected ResponseSocket m_reply;
+        protected Poller m_poller;
         protected PublisherSocket m_publisher;
         protected SubscriberSocket m_subscriber;
         protected RequestSocket m_stage;
-        protected ZstPoller m_pollerThread;
 
 
         // Constructors
@@ -71,11 +71,7 @@ namespace ZST
         public void init(string nodeId, string stageAddress)
         {
             m_nodeId = nodeId;
-            m_methods = new Dictionary<string, ZstMethod>();
-            m_internalNodeMethods = new Dictionary<string, ZstMethod>();
-            m_peers = new Dictionary<string, ZstPeerLink>();
             m_stageAddress = stageAddress;
-            initNetwork();
         }
 
         protected void initNetwork()
@@ -84,15 +80,23 @@ namespace ZST
             registerInternalMethods();
 
             m_ctx = NetMQContext.Create();
-            m_reply = m_ctx.CreateResponseSocket();
-            m_reply.Options.Linger = System.TimeSpan.Zero;
-            m_reply.Options.ReceiveTimeout = System.TimeSpan.FromSeconds(2);
+            m_poller.PollTimeout = 4;
 
             m_publisher = m_ctx.CreatePublisherSocket();
             m_publisher.Options.Linger = System.TimeSpan.Zero;
 
+            m_reply = m_ctx.CreateResponseSocket();
+            m_reply.Options.Linger = System.TimeSpan.Zero;
+            AddListeningSocket(m_reply);
+
             m_subscriber = m_ctx.CreateSubscriberSocket();
             m_subscriber.Options.Linger = System.TimeSpan.Zero;
+            m_subscriber.SubscribeToAnyTopic();
+            AddListeningSocket(m_subscriber);
+
+            // Bind event listeners to sockets
+            m_reply.ReceiveReady += receiveMethodUpdate;
+            m_subscriber.ReceiveReady += receiveMethodUpdate;
 
             // Binding ports
             IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
@@ -115,11 +119,11 @@ namespace ZST
                 //Bind reply 
                 int replyPort = m_reply.BindRandomPort(address);
                 m_replyAddress = address + ":" + replyPort;
-
+                
                 m_stage = m_ctx.CreateRequestSocket();
                 m_stage.Options.Linger = System.TimeSpan.Zero;
                 m_stage.Connect(m_stageAddress);
-                Console.WriteLine("Stage located at " + m_stage.Options.GetLastEndpoint);
+                Console.WriteLine("Stage located at " + m_stage.Options.LastEndpoint);
                 Console.WriteLine("Node reply on address " + m_replyAddress);
                 Console.WriteLine("Node publisher on address " + m_publisherAddress);
             }
@@ -127,23 +131,23 @@ namespace ZST
             {
                 m_reply.Bind("tcp://*:" + m_stagePort);
             }
-           
+        }
 
-            // Subscribe to all incoming messages
-            m_subscriber.SubscribeToAll();
+        protected override void ThreadFunction()
+        {
+            m_methods = new Dictionary<string, ZstMethod>();
+            m_internalNodeMethods = new Dictionary<string, ZstMethod>();
+            m_peers = new Dictionary<string, ZstPeerLink>();
+            m_listeningSockets = new List<NetMQSocket>();
+            m_poller = new NetMQ.Poller();
+            initNetwork();
+            m_poller.PollTillCancelled();
+        }
 
-            // Bind event listeners to sockets
-            m_reply.ReceiveReady += receiveMethodUpdate;
-            m_subscriber.ReceiveReady += receiveMethodUpdate;
-
-            //Register application exit event
-            //Application.ApplicationExit += new EventHandler(this.OnApplicationExit);
-
-            // Intialize Poller
-            m_pollerThread = new ZstPoller();
-            m_pollerThread.AddSocket(m_subscriber);
-            m_pollerThread.AddSocket(m_reply);
-            m_pollerThread.Start();
+        public void AddListeningSocket(NetMQSocket socket)
+        {
+            m_listeningSockets.Add(socket);
+            m_poller.AddSocket(socket);
         }
 
         private void registerInternalMethods()
@@ -165,6 +169,12 @@ namespace ZST
         /// <summary>Close and dispose of all sockets/pollers/threads</summary>
         public bool close()
         {
+            return close(true);
+        }
+
+        /// <summary>Close and dispose of all sockets/pollers/threads</summary>
+        public bool close(bool stopContext)
+        {
 			//Announce that we're leaving to all connected peers
             ZstIo.send(m_publisher, DISCONNECT_PEER, new ZstMethod(DISCONNECT_PEER, m_nodeId));
 
@@ -177,11 +187,18 @@ namespace ZST
 				peer.Value.disconnect();
 			m_peers.Clear();
 
+            foreach (NetMQSocket socket in m_listeningSockets)
+            {
+                m_poller.RemoveSocket(socket);
+                socket.Dispose();
+            }
+            m_listeningSockets.Clear();
+            m_poller.Cancel();
+
             //Exit poller
-            m_pollerThread.IsDone = true;
-            m_pollerThread.Update();
-			m_pollerThread.Abort();
-			m_pollerThread = null;
+            this.IsDone = true;
+            this.Update();
+			//this.Abort();
 
 			//Clear publisher
             m_publisher.Dispose();
@@ -189,7 +206,8 @@ namespace ZST
 			m_reply.Dispose();
 
 			//Clear context
-            m_ctx.Dispose();
+            if(stopContext)
+                m_ctx.Dispose();
             return true;
         }
 
@@ -214,7 +232,7 @@ namespace ZST
         /// <summary>Method update handler</summary>
         protected void receiveMethodUpdate(object sender, NetMQSocketEventArgs e)
         {
-            if (e.ReceiveReady)
+            if (e.IsReadyToReceive)
             {
                 MethodMessage msg = ZstIo.recv(e.Socket);
                 Console.Write("Recieved method '" + msg.method);
@@ -266,16 +284,18 @@ namespace ZST
                 {ZstPeerLink.PUBLISHER_ADDRESS, m_publisherAddress}};
             ZstMethod request = new ZstMethod(REPLY_REGISTER_NODE, m_nodeId, "", requestArgs);
 
-            ZstIo.send(socket, REPLY_REGISTER_NODE, request); 
+            ZstIo.send(socket, REPLY_REGISTER_NODE, request);
             MethodMessage msg = ZstIo.recv(socket);
-
-            if (msg.method == OK){
+            if (msg.method == OK)
+            {
                 Console.WriteLine("REP<--: Remote node acknowledged our addresses. Reply:" + m_replyAddress + ", Publisher:" + m_publisherAddress);
-				return true;
-			} else { 
+                return true;
+            }
+            else
+            {
                 Console.WriteLine("REP<--:Remote node returned " + msg.method + " instead of " + OK);
-			}
-			return false;
+            }
+            return false;
         }
 
         /// <summary>Reply to another node's request for registration</summary>
@@ -300,7 +320,7 @@ namespace ZST
         public void subscribeToNode(ZstPeerLink peer)
         {
             m_subscriber.Connect(peer.publisherAddress);
-            m_subscriber.SubscribeToAll();
+            m_subscriber.SubscribeToAnyTopic();
             m_peers[peer.name] = peer;
 
             Console.WriteLine("Connected to peer on " + peer.publisherAddress);
@@ -311,10 +331,11 @@ namespace ZST
         {
             NetMQSocket socket = m_ctx.CreateRequestSocket();
 			socket.Options.Linger = System.TimeSpan.Zero;
-            socket.Options.ReceiveTimeout = System.TimeSpan.FromSeconds(2);
+            //socket.Options.ReceiveTimeout = System.TimeSpan.FromSeconds(2);
 
+            //socket.Options.DelayAttachOnConnect = true;
             socket.Connect(peer.replyAddress);
-            
+            Thread.Sleep(1000);
 			if(requestRegisterNode(socket)){
 				if(!m_peers.Keys.Contains(peer.name))
 					m_peers[peer.name] = peer;

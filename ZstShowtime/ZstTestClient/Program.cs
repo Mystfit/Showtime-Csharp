@@ -10,14 +10,15 @@ namespace ZstTestClient
     {
         static void Main(string[] args)
         {
-            ZstNode node = new ZstNode("csharptest", "tcp://curiosity.soad.vuw.ac.nz:6000");
+            ZstNode node = new ZstNode("csharptest", "tcp://192.168.1.106:6000");
             node.requestRegisterNode();
 
             Dictionary<string, object> nodeArgs = new Dictionary<string, object>(){
                 {"greeting", ""}};
-            node.requestRegisterMethod("testMethod", ZstMethod.WRITE, nodeArgs, testMethod);
+            //node.requestRegisterMethod("testMethod", ZstMethod.WRITE, nodeArgs);
+            //node.requestRegisterMethod("testMethod", ZstMethod.WRITE, nodeArgs, testMethod);
 
-            Dictionary<string, ZstPeerLink> peerList = node.requestNodePeerlinks();
+            Dictionary <string, ZstPeerLink> peerList = node.requestNodePeerlinks();
 
             Console.WriteLine("");
             foreach (KeyValuePair<string, ZstPeerLink> peer in peerList)

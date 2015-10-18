@@ -32,7 +32,9 @@ namespace ZST
             {
                 message.Append("{}");
             }
-            socket.SendMessage(message, true);
+
+            TimeSpan timeout = TimeSpan.FromSeconds(2);
+            socket.SendMessage(message, false);
         }
 
         /// <summary>Receive a message from a remote node</summary>
@@ -46,7 +48,11 @@ namespace ZST
         {
             try
             {
-                NetMQMessage message = socket.ReceiveMessage(dontWait);
+                TimeSpan timeout = TimeSpan.FromSeconds(5);
+                NetMQMessage message = null;
+                if(!socket.TryReceiveMultipartMessage(timeout, ref message)) {
+                    throw new Exception("Timed out receiving message");
+                }
                 string method = message[0].ConvertToString();
 
                 //Dictionary<string, object> data = new Dictionary<string, object>();
@@ -57,7 +63,7 @@ namespace ZST
             }
             catch (NetMQException e)
             {
-
+                Console.Write(e);
             }
             return new MethodMessage("", null);
         }
