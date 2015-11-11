@@ -66,18 +66,27 @@
     <Compile Include="ZstPoller.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Newtonsoft.Json\Src\Newtonsoft.Json\Newtonsoft.Json.Net35.csproj">
+    <ProjectReference Include="..\..\libraries\Mono.Zeroconf\src\Mono.Zeroconf.Providers.Bonjour\Mono.Zeroconf.Providers.Bonjour.csproj">
+      <Project>{623325e2-5821-4701-a40c-3759097008dd}</Project>
+      <Name>Mono.Zeroconf.Providers.Bonjour</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\libraries\Mono.Zeroconf\src\Mono.Zeroconf\Mono.Zeroconf.csproj">
+      <Project>{5cf88e3a-13dd-4114-bad9-da826946516f}</Project>
+      <Name>Mono.Zeroconf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\libraries\netmq\src\NetMQ\NetMQ3.5.csproj">
+      <Project>{fa712b74-d68a-4053-bb0f-a3ed1fbeabc1}</Project>
+      <Name>NetMQ3.5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\libraries\Newtonsoft.Json.7.0r1\Source\Src\Newtonsoft.Json\Newtonsoft.Json.Net35.csproj">
       <Project>{a9ae40ff-1a21-414a-9fe7-3be13644cc6d}</Project>
       <Name>Newtonsoft.Json.Net35</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\netmq\src\NetMQ\NetMQ_Vs2008.csproj">
-      <Project>{12d3fb9f-85b8-4ffa-aa2b-f21187f4c7a0}</Project>
-      <Name>NetMQ_Vs2008</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo FY | xcopy $(TargetPath) C:\Code\TeslaRift\TeslaRift-Unity\Assets\Plugins\Showtime\$(TargetFileName)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

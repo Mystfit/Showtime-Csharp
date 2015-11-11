@@ -68,9 +68,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Newtonsoft.Json\Src\Newtonsoft.Json\Newtonsoft.Json.Net35.csproj">
-      <Project>{a9ae40ff-1a21-414a-9fe7-3be13644cc6d}</Project>
-      <Name>Newtonsoft.Json.Net35</Name>
+    <ProjectReference Include="..\..\libraries\Mono.Zeroconf\src\Mono.Zeroconf.Providers.Bonjour\Mono.Zeroconf.Providers.Bonjour.csproj">
+      <Project>{623325e2-5821-4701-a40c-3759097008dd}</Project>
+      <Name>Mono.Zeroconf.Providers.Bonjour</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\libraries\Mono.Zeroconf\src\Mono.Zeroconf\Mono.Zeroconf.csproj">
+      <Project>{5cf88e3a-13dd-4114-bad9-da826946516f}</Project>
+      <Name>Mono.Zeroconf</Name>
     </ProjectReference>
     <ProjectReference Include="..\ZstShowtime\ZstShowtime.csproj">
       <Project>{62ed8430-5263-442d-9d2f-62b92e9dc528}</Project>

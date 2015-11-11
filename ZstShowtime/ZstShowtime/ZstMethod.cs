@@ -90,8 +90,8 @@ namespace ZST {
 			try{
                 return m_callback(methodData);
 			} catch(Exception e){
-                System.Console.WriteLine(e.ToString());
-			}
+                Console.Write(e);
+            }
 			return null;
 		}
 

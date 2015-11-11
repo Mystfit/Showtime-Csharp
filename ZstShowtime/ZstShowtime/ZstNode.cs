@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
+using Mono.Zeroconf;
 
 namespace ZST
 {
@@ -57,6 +58,11 @@ namespace ZST
         // Constructors
         // ------------
 
+        public ZstNode(string nodeId)
+        {
+            init(nodeId, "");
+        }
+
         public ZstNode(string nodeId, int stagePort)
         {
             m_stagePort = stagePort;
@@ -86,7 +92,6 @@ namespace ZST
             m_ctx = NetMQContext.Create();
             m_reply = m_ctx.CreateResponseSocket();
             m_reply.Options.Linger = System.TimeSpan.Zero;
-            m_reply.Options.ReceiveTimeout = System.TimeSpan.FromSeconds(2);
 
             m_publisher = m_ctx.CreatePublisherSocket();
             m_publisher.Options.Linger = System.TimeSpan.Zero;
@@ -110,16 +115,21 @@ namespace ZST
             int publisherPort = m_publisher.BindRandomPort(address);
             m_publisherAddress = address + ":" + publisherPort;
 
+            if (string.IsNullOrEmpty(m_stageAddress)){
+                m_stageAddress = FindStageBeacon();
+            }
+
             if (!string.IsNullOrEmpty(m_stageAddress))
             {
                 //Bind reply 
                 int replyPort = m_reply.BindRandomPort(address);
                 m_replyAddress = address + ":" + replyPort;
-
+                
                 m_stage = m_ctx.CreateRequestSocket();
                 m_stage.Options.Linger = System.TimeSpan.Zero;
+                //m_stage.Options.DelayAttachOnConnect = true;
                 m_stage.Connect(m_stageAddress);
-                Console.WriteLine("Stage located at " + m_stage.Options.GetLastEndpoint);
+                Console.WriteLine("Stage located at " + m_stage.Options.LastEndpoint);
                 Console.WriteLine("Node reply on address " + m_replyAddress);
                 Console.WriteLine("Node publisher on address " + m_publisherAddress);
             }
@@ -130,7 +140,7 @@ namespace ZST
            
 
             // Subscribe to all incoming messages
-            m_subscriber.SubscribeToAll();
+            m_subscriber.SubscribeToAnyTopic();
 
             // Bind event listeners to sockets
             m_reply.ReceiveReady += receiveMethodUpdate;
@@ -144,6 +154,38 @@ namespace ZST
             m_pollerThread.AddSocket(m_subscriber);
             m_pollerThread.AddSocket(m_reply);
             m_pollerThread.Start();
+        }
+
+        private string FindStageBeacon()
+        {
+            string stageAddress = null;
+            bool foundStage = false;
+            ServiceBrowser browser = new ServiceBrowser();
+            browser.ServiceAdded += delegate (object o, ServiceBrowseEventArgs eventArgs)
+            {
+                eventArgs.Service.Resolved += delegate (object o1, ServiceResolvedEventArgs resolvedArgs)
+                {
+                    if (resolvedArgs.Service.HostEntry.AddressList.Length > 0)
+                    {
+                        string address = resolvedArgs.Service.HostEntry.AddressList[0].ToString();
+                        string port = resolvedArgs.Service.Port.ToString();
+                        stageAddress = "tcp://" + address + ":" + port;
+                        Console.WriteLine("Stage address is: {0}", m_stageAddress);
+                        foundStage = true;
+                    }
+                };
+                eventArgs.Service.Resolve();
+                Console.WriteLine("Found Showtime Service: {0}", eventArgs.Service.Name);
+            };
+
+            browser.Browse("_zeromq._tcp", "local");
+            int retries = 3;
+            while (retries-- > 0 || !foundStage)
+            {
+                System.Threading.Thread.Sleep(1000);
+                System.Console.WriteLine("Seaching for stage...");
+            }
+            return stageAddress;
         }
 
         private void registerInternalMethods()
@@ -164,6 +206,12 @@ namespace ZST
 
         /// <summary>Close and dispose of all sockets/pollers/threads</summary>
         public bool close()
+        {
+            return close(true);
+        }
+
+        /// <summary>Close and dispose of all sockets/pollers/threads</summary>
+        public bool close(bool stopContext)
         {
 			//Announce that we're leaving to all connected peers
             ZstIo.send(m_publisher, DISCONNECT_PEER, new ZstMethod(DISCONNECT_PEER, m_nodeId));
@@ -189,7 +237,8 @@ namespace ZST
 			m_reply.Dispose();
 
 			//Clear context
-            m_ctx.Dispose();
+            if(stopContext)
+                m_ctx.Dispose();
             return true;
         }
 
@@ -214,7 +263,7 @@ namespace ZST
         /// <summary>Method update handler</summary>
         protected void receiveMethodUpdate(object sender, NetMQSocketEventArgs e)
         {
-            if (e.ReceiveReady)
+            if (e.IsReadyToReceive)
             {
                 MethodMessage msg = ZstIo.recv(e.Socket);
                 Console.Write("Recieved method '" + msg.method);
@@ -266,16 +315,18 @@ namespace ZST
                 {ZstPeerLink.PUBLISHER_ADDRESS, m_publisherAddress}};
             ZstMethod request = new ZstMethod(REPLY_REGISTER_NODE, m_nodeId, "", requestArgs);
 
-            ZstIo.send(socket, REPLY_REGISTER_NODE, request); 
+            ZstIo.send(socket, REPLY_REGISTER_NODE, request);
             MethodMessage msg = ZstIo.recv(socket);
-
-            if (msg.method == OK){
+            if (msg.method == OK)
+            {
                 Console.WriteLine("REP<--: Remote node acknowledged our addresses. Reply:" + m_replyAddress + ", Publisher:" + m_publisherAddress);
-				return true;
-			} else { 
+                return true;
+            }
+            else
+            {
                 Console.WriteLine("REP<--:Remote node returned " + msg.method + " instead of " + OK);
-			}
-			return false;
+            }
+            return false;
         }
 
         /// <summary>Reply to another node's request for registration</summary>
@@ -300,7 +351,7 @@ namespace ZST
         public void subscribeToNode(ZstPeerLink peer)
         {
             m_subscriber.Connect(peer.publisherAddress);
-            m_subscriber.SubscribeToAll();
+            m_subscriber.SubscribeToAnyTopic();
             m_peers[peer.name] = peer;
 
             Console.WriteLine("Connected to peer on " + peer.publisherAddress);
@@ -311,10 +362,11 @@ namespace ZST
         {
             NetMQSocket socket = m_ctx.CreateRequestSocket();
 			socket.Options.Linger = System.TimeSpan.Zero;
-            socket.Options.ReceiveTimeout = System.TimeSpan.FromSeconds(2);
+            //socket.Options.ReceiveTimeout = System.TimeSpan.FromSeconds(2);
 
+            //socket.Options.DelayAttachOnConnect = true;
             socket.Connect(peer.replyAddress);
-            
+            Thread.Sleep(1000);
 			if(requestRegisterNode(socket)){
 				if(!m_peers.Keys.Contains(peer.name))
 					m_peers[peer.name] = peer;
